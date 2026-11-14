@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Editor Gerber Help</title>
+<style>
+body { font-family: 'Segoe UI', sans-serif; font-size: 11pt; color: #243249; background: #ffffff; }
+h1 { font-size: 25pt; color: #155b92; margin-bottom: 5px; }
+h2 { font-size: 17pt; color: #155b92; margin-top: 26px; }
+h3 { font-size: 12pt; color: #344b65; margin-top: 18px; }
+p, li { line-height: 140%; }
+a { color: #176ba8; }
+th { background-color: #e8f1fa; color: #174b75; }
+td, th { padding: 7px; }
+.subtitle { color: #5c7084; }
+.tip { background-color: #eef5fc; padding: 12px; }
+</style></head><body>
+<a name="start"></a><h1>Editor Gerber</h1>
+<p class="subtitle">Getting started &middot; version {{version}}</p>
+<p>Open the board layers, inspect their overlap, edit in 2D and review the result in 3D.
+You can keep this help window open while working.</p>
+<h3>First steps</h3>
+<ol>
+<li><b>Open the Gerbers</b> from File or press <b>{{file.open}}</b>.</li>
+<li><b>Activate a layer</b> in the manager on the right; press <b>{{view.fit}}</b> to fit the board.</li>
+<li><b>Select and edit</b> objects, import artwork or draw shapes.</li>
+<li><b>Review in 3D</b> with <b>{{view.3d}}</b> and save your work from File.</li>
+</ol>
+<h3>Contents</h3>
+<p><a href="#files">1. Files and saving</a><br>
+<a href="#layers">2. Layers and functions</a><br>
+<a href="#selection">3. Navigation and selection</a><br>
+<a href="#groups">4. Grouping and ungrouping</a><br>
+<a href="#editing">5. Moving, copying and editing</a><br>
+<a href="#images">6. Importing images</a><br>
+<a href="#drawing">7. Shapes, text and dimensions</a><br>
+<a href="#fabrication">8. Fiducials and cutouts</a><br>
+<a href="#viewer3d">9. The 3D viewer and export</a><br>
+<a href="#preferences">10. Preferences</a><br>
+<a href="#shortcuts">11. Current shortcuts</a></p>
+<p class="tip">Press <b>Ctrl+F</b> in this window to search. Enter or Next finds the next occurrence; Previous searches backward.</p>
+
+<h2><a name="files"></a>1. Files and saving</h2>
+<p><b>File → Open Gerber</b> accepts multiple files, including files without extensions.
+<b>Open Gerber folder</b> loads recognized files from the selected folder.
+The auxiliary <i>fp-info-cache</i> file is ignored.</p>
+<p>The status-bar progress advances after each file is processed during batch opening.
+<b>.drl/.xln (Excellon)</b> files with an M48 header also open, including holes and slots in millimetres or inches.
+Units must be declared; coordinates without a decimal point require an explicit format declaration.</p>
+<p><b>Save</b> writes the active layer. <b>Save as</b> lets you choose a destination and output mode.
+<b>Preservation</b> keeps original commands when possible; <b>Normalized</b> emits the layer geometry again.
+Output is validated before being written.</p>
+<p>The editor asks before replacing an original Gerber. An asterisk beside a layer name indicates unsaved fabrication changes.</p>
+<p><b>Save all files</b>, in the File menu and top toolbar, writes layers with unsaved changes or no saved file.
+Choose destinations for new layers before starting. A warning explains that saving may take time and lets you review destinations, including originals to be replaced.
+The bottom progress bar advances after each file is saved and validated. A failure stops the batch and reports how many files were saved; remaining layers stay pending.</p>
+<p>Excellon drilling can be saved as <b>.drl</b> or converted to <b>.gbr</b> using <b>Save as</b>.
+Preservation keeps unmodified Excellon bytes. Edited drill data is emitted in millimetres with decimal coordinates and validated by reopening.
+Excellon supports circular tools, holes and slot paths; use Gerber for filled shapes or Clear polarity.</p>
+<p><b>Close all files</b> also has a top toolbar icon and asks about unsaved changes before closing.
+Use <b>Help → <a href="{{report_url}}">Report problems</a></b> to open the form in your browser.</p>
+<p class="tip"><b>Session data:</b> selection groups and editable vector text remain available during the session.
+Saving retains the fabrication geometry; closing and reopening the Gerber does not restore selection groups or editable text content.</p>
+
+<h2><a name="layers"></a>2. Layers and functions</h2>
+<p>Click a layer name in the manager to activate it. It appears in front of other layers while active.
+The <b>Move up/Move down</b> buttons organize inactive layers.</p>
+<p>Use the checkbox to show or hide a layer. Double-click its name for <b>Color, Opacity and Function</b> options.
+The × button closes the layer.</p>
+<table width="100%" cellspacing="0" cellpadding="6" border="1">
+<tr><th>Function</th><th>Meaning</th></tr>
+<tr><td>F.Cu / B.Cu / InN.Cu</td><td>Top, bottom or inner copper.</td></tr>
+<tr><td>F.Silk / B.Silk</td><td>Top or bottom silkscreen.</td></tr>
+<tr><td>F.Mask / B.Mask</td><td>Solder mask openings.</td></tr>
+<tr><td>F.Paste / B.Paste</td><td>Solder paste.</td></tr>
+<tr><td>Edge.Cuts / Route.Cuts</td><td>Board outline and cutouts/slots.</td></tr>
+<tr><td>Drill / Drill.PTH / Drill.NPTH</td><td>Through holes and slots supplied in Gerber format.</td></tr>
+</table>
+<p>The editor prioritizes the function declared in Gerber X2 data. Otherwise, it uses the filename/extension.
+For example, <i>olc</i> means top copper, <i>srlc</i> top silkscreen and <i>fur</i> drill data.
+You can correct <b>Function</b> manually.</p>
+
+<h2><a name="selection"></a>3. Navigation and selection</h2>
+<ul>
+<li><b>Mouse wheel:</b> zoom at the cursor.</li>
+<li><b>Hold the middle button:</b> pan the view.</li>
+<li><b>{{view.fit}}:</b> fit all visible layers.</li>
+<li><b>Click:</b> select an object or group. <b>Ctrl+click</b> adds/removes it from the selection.</li>
+<li><b>Drag a window left to right:</b> select fully enclosed objects. A group must fit entirely inside.</li>
+<li><b>Drag right to left:</b> select crossing objects; touching one member selects the whole group.</li>
+</ul>
+<p><b>Select active layer only</b> restricts selection to the chosen layer.
+The Properties panel describes the selection and offers editing for supported object types.</p>
+
+<h2><a name="groups"></a>4. Grouping and ungrouping</h2>
+<p>Imported artwork is <b>grouped automatically</b>. Click any part to select the whole image,
+then move, copy or delete it as a unit.</p>
+<ol>
+<li>Select two or more objects on the <b>same layer</b>.</li>
+<li>Choose <b>Edit → Group objects</b> or press <b>{{edit.group}}</b>.</li>
+<li>To separate the components, select the group and choose <b>Ungroup objects</b> or press <b>{{edit.ungroup}}</b>.</li>
+</ol>
+<p>Grouping and ungrouping support <b>{{edit.undo}} / {{edit.redo}}</b>.
+Copies receive independent groups, so selecting the original does not select its copies.
+Vector text remains editable as text during the session.</p>
+<p class="tip">Groups organize selection during the session. They do not change fabrication objects or add grouping data to Gerber output.</p>
+
+<h2><a name="editing"></a>5. Moving, copying and editing</h2>
+<p>The <b>Edit</b> menu commands also have icons in the top toolbar, between file and view controls.
+Hover over an icon to see its name and shortcut. Disabled buttons appear gray.</p>
+<p>Disabled or read-only fields also appear gray. Read-only fields still allow selecting and copying content where applicable;
+use <b>Edit properties</b> to change an object's parameters.</p>
+<p>Select an object or group and press <b>{{edit.move}}</b> to move it with the cursor.
+Click to place; <b>Esc</b> or right-click cancels the preview. You can also click and drag a selection.</p>
+<p><b>{{edit.copy}}</b> copies, <b>{{edit.cut}}</b> cuts, and <b>{{edit.paste}}</b> pastes with the cursor.
+<b>{{edit.duplicate}}</b> prepares a duplicate. <b>{{edit.delete}}</b> deletes the selection.
+<b>{{edit.undo}}</b> undoes and <b>{{edit.redo}}</b> redoes an operation.</p>
+<p>Paste, duplicate, mirror copy and Move attach the <b>lower-left corner of the selection</b> to the cursor,
+including stroke width and pad extents. Mirrored copies recalculate this corner after reflection.
+Clicking commits the preview position, respecting snap. Direct dragging keeps the point where you grabbed the object as its reference.</p>
+<p><b>Edit → Move by offset</b> accepts exact X/Y offsets. <b>Mirrored copy</b> reflects across X, Y or both.
+<b>Copy array</b> distributes copies in rows/columns or around a center.</p>
+<p>Double-click an object to open compatible properties. Text created during this session can be changed in the text dialog.
+Ungroup imported artwork before editing its components separately.</p>
+
+<h2><a name="images"></a>6. Importing images</h2>
+<p>Choose <b>Tools → Import black-and-white graphic</b> or press <b>{{tool.import_graphic}}</b>.
+PNG, JPG, BMP, TIFF and WebP files are supported.</p>
+<ol>
+<li>Set the <b>physical width</b>, pixel <b>resolution</b> and black/white <b>threshold</b>.</li>
+<li>Check the preview. Black creates geometry; white/transparency leaves an empty area. Use <b>Invert</b> when needed.</li>
+<li>Keep <b>Place with mouse</b> checked and confirm.</li>
+<li>The preview follows the cursor. Click to place the <b>image center</b>.</li>
+</ol>
+<p>For coordinate placement, uncheck <b>Place with mouse</b> and enter the lower-left corner X/Y.
+The import enters history only after placement. Artwork retains width, aspect ratio and polarity,
+is grouped, and can be undone as one operation.</p>
+
+<h2><a name="drawing"></a>7. Shapes, text and dimensions</h2>
+<p>Activate a visible layer, then select a tool from the left panel or Tools menu.</p>
+<p>Enable <b>Filled</b> in the parameter toolbar for solid circles, squares and rectangles.
+A filled arc creates a <b>circular sector</b>, closed by its two radii. Select a shape and open <b>Edit properties</b> (E) to change it later.</p>
+<p>To edit multiple compatible objects, select them and open properties. Check only the fields to apply; changing a value checks its box automatically.
+<b>Multiple values</b> indicates differing values. Changing only Radius or Thickness keeps centers, positions and other parameters individually.</p>
+<p><b>Edit → Copy array</b> also has a top toolbar button. For a rectangular array, set rows, columns and X/Y spacing.
+For a polar array, set count and total angle. Enable <b>Define polar array by radius</b> to set the radius and direction of the center relative to the original;
+the original stays in place. At 180°, the center is to the left. Counts include the original: 4 positions create 3 copies.
+You can also pick the center with the mouse or enter its coordinates, and choose whether objects rotate with the array.</p>
+<ul>
+<li><b>Line:</b> click its start and end.</li>
+<li><b>Arc:</b> click the center, start and end direction. Clockwise arcs are available in the menu.</li>
+<li><b>Circle:</b> click the center and a point on its edge.</li>
+<li><b>Rectangle/square:</b> click two opposite corners.</li>
+<li><b>Text:</b> click the insertion point, then set content, font, height and orientation.</li>
+<li><b>Dimension:</b> indicate two measured points and the dimension position.</li>
+<li><b>Measure distance:</b> click two points; the ruler displays distances without adding geometry.</li>
+</ul>
+<p><b>Dark</b> adds and <b>Clear</b> subtracts areas in object order.
+<b>Shift</b> constrains direction to 45° or 90°, depending on Ortho.
+Grid snap and point snap can be configured independently.</p>
+
+<h2><a name="fabrication"></a>8. Fiducials and cutouts</h2>
+<p><b>Insert fiducial</b> sets position, copper diameter, mask opening and board side.
+Required layers are created when needed.</p>
+<p>Select shapes and use <b>Cutouts and slots from selection</b> to use stroke width or a closed profile as a cut.
+<b>Route.Cuts</b> identifies cut geometry used in 3D. You can also use <b>New cutout layer</b> to draw it directly.</p>
+
+<h2><a name="viewer3d"></a>9. The 3D viewer and export</h2>
+<p>Choose <b>View → 3D viewer</b> or press <b>{{view.3d}}</b>.
+After a 2D edit, return to the 3D window to update the board. <b>Update PCB</b> requests another check of the data.</p>
+<p>The bottom bar shows percentage progress through preparation, drilling, composition and meshing, for initial generation and updates.
+Percentages describe completed stages and do not predict remaining time.</p>
+<ul>
+<li><b>Drag:</b> orbit. Middle/right button pans. The wheel zooms.</li>
+<li>Use Top, Bottom, Isometric, Front and Right views. <b>Home</b> fits and <b>F</b> flips the board.</li>
+<li><b>PCB thickness</b> sets board thickness. <b>3D detail</b> offers Fine, Normal and Fast.</li>
+<li><b>Realistic</b> changes lighting; <b>Perspective</b> switches projection.</li>
+<li>The materials list hides the substrate or surfaces to reveal other layers.</li>
+</ul>
+<p><b>Edge.Cuts</b> supplies the actual outline. Without it, the viewer reports a rectangle estimated from layer bounds.
+<b>Drill / Drill.PTH / Drill.NPTH</b> in Gerber or Excellon format cut through holes and slots, even when hidden in 2D.
+Drillmap is an auxiliary drawing. Blind/buried holes still require a stackup unavailable in this version.</p>
+<p>The 3D File menu exports <b>JPG</b>, <b>WRL</b> and <b>colored STEP</b>.
+Choose the JPG resolution. Models use visible materials; STEP is disabled when its support is unavailable in the installation.</p>
+
+<h2><a name="preferences"></a>10. Preferences</h2>
+<p>Configure units, grid, canvas color, tool layout, language and keyboard shortcuts.
+Units change how values are displayed. Preferences are retained after restarting.</p>
+<p>Choose <b>Preferences → Keyboard shortcuts</b> to customize keys. The table below uses current assignments;
+reopen help after changing them to check the list.</p>
+
+<h2><a name="shortcuts"></a>11. Current shortcuts</h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="6">
+<tr><th align="left">Action</th><th align="left">Shortcut</th></tr>
+{{shortcuts}}
+</table>
+<p><a href="#start">Back to contents</a></p>
+</body></html>

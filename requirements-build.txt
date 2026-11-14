@@ -1,0 +1,12 @@
+# Release toolchain; runtime versions match the validated development environment.
+pyinstaller==6.22.3
+pyinstaller-hooks-contrib==2026.10
+PySide6-Essentials==6.12.0
+shiboken6==6.12.0
+shapely==2.2.0
+numpy==2.5.4
+qrcode==8.2
+pillow==13.0.0
+cadquery-ocp==7.9.3.1
+cadquery-ocp-proxy==7.9.3.1
+vtk==9.5.2

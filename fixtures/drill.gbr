@@ -1,0 +1,16 @@
+G04 Through drill and slot fixture; dimensions in millimeters*
+%FSLAX46Y46*%
+%MOMM*%
+%TF.FileFunction,Plated,1,2,PTH,Drill*%
+%ADD10C,1.2*%
+%ADD11C,0.8*%
+%ADD12C,0.2*%
+%LPD*%
+D10*
+X5000000Y5000000D03*
+D11*
+X12000000Y3000000D02*
+X15000000Y3000000D01*
+D12*
+X18000000Y8000000D03*
+M02*

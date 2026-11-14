@@ -1,0 +1,2 @@
+# Optional STEP CAD backend (installed in the delivered development environment).
+cadquery-ocp==7.9.3.1

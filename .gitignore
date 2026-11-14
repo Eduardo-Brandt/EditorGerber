@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+*.log
+output/
+Backup/
+dist/
+build/
+Descricao projeto
+.aws/
+.codex/
+.env
+.env.*

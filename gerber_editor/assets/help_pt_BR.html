@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Ajuda do Editor Gerber</title>
+<style>
+body { font-family: 'Segoe UI', sans-serif; font-size: 11pt; color: #243249; background: #ffffff; }
+h1 { font-size: 25pt; color: #155b92; margin-bottom: 5px; }
+h2 { font-size: 17pt; color: #155b92; margin-top: 26px; }
+h3 { font-size: 12pt; color: #344b65; margin-top: 18px; }
+p, li { line-height: 140%; }
+a { color: #176ba8; }
+th { background-color: #e8f1fa; color: #174b75; }
+td, th { padding: 7px; }
+.subtitle { color: #5c7084; }
+.tip { background-color: #eef5fc; padding: 12px; }
+</style></head><body>
+<a name="start"></a><h1>Editor Gerber</h1>
+<p class="subtitle">Guia básico &middot; versão {{version}}</p>
+<p>Abra as camadas da placa, confira a sobreposição, faça suas edições no 2D
+e inspecione o resultado no visualizador 3D. Esta ajuda pode ficar aberta enquanto você trabalha.</p>
+<h3>Por onde começar</h3>
+<ol>
+<li><b>Abra os Gerbers</b> pelo menu Arquivo ou por <b>{{file.open}}</b>.</li>
+<li><b>Ative uma camada</b> no gestor à direita e use <b>{{view.fit}}</b> para enquadrar a placa.</li>
+<li><b>Selecione e edite</b> objetos, importe uma imagem ou crie formas.</li>
+<li><b>Confira o 3D</b> por <b>{{view.3d}}</b> e salve o resultado pelo menu Arquivo.</li>
+</ol>
+<h3>Índice</h3>
+<p><a href="#files">1. Arquivos e salvamento</a><br>
+<a href="#layers">2. Camadas e funções</a><br>
+<a href="#selection">3. Navegação e seleção</a><br>
+<a href="#groups">4. Agrupar e desagrupar</a><br>
+<a href="#editing">5. Mover, copiar e editar</a><br>
+<a href="#images">6. Importar imagens</a><br>
+<a href="#drawing">7. Desenho, texto e cotas</a><br>
+<a href="#fabrication">8. Fiduciais e recortes</a><br>
+<a href="#viewer3d">9. Visualizador 3D e exportação</a><br>
+<a href="#preferences">10. Preferências</a><br>
+<a href="#shortcuts">11. Atalhos atuais</a></p>
+<p class="tip">Use <b>Ctrl+F</b> nesta janela para buscar uma palavra. Enter ou Próximo encontra a próxima ocorrência; Anterior busca no sentido inverso.</p>
+
+<h2><a name="files"></a>1. Arquivos e salvamento</h2>
+<p><b>Arquivo → Abrir Gerber</b> aceita vários arquivos de uma vez, inclusive sem extensão.
+<b>Abrir pasta de Gerbers</b> procura os arquivos reconhecidos na pasta escolhida.
+O arquivo auxiliar <i>fp-info-cache</i> é ignorado.</p>
+<p>A barra no rodapé avança a cada arquivo processado na abertura em lote.
+Arquivos <b>.drl/.xln (Excellon)</b> com cabeçalho M48 também abrem, inclusive furos e rasgos, em milímetros ou polegadas.
+A unidade precisa estar declarada; coordenadas sem ponto decimal precisam de formato explícito no arquivo.</p>
+<p><b>Salvar</b> grava a camada ativa. <b>Salvar como</b> permite escolher outro arquivo
+e o modo de saída. <b>Preservation</b> conserva os comandos originais quando possível;
+<b>Normalized</b> reemite a geometria da camada. A saída é validada antes de ser gravada.</p>
+<p>Quando o destino é o Gerber original, o editor pede confirmação para substituí-lo.
+O asterisco no nome da camada indica alterações de fabricação ainda não salvas.</p>
+<p><b>Salvar todos os arquivos</b>, no menu Arquivo e na barra superior, grava as camadas com alterações ou ainda sem arquivo salvo.
+Para camadas novas, escolha os destinos antes de iniciar. O aviso informa que o processo pode demorar e permite conferir os destinos, incluindo originais que serão substituídos.
+A barra inferior avança a cada arquivo salvo e validado. Em caso de falha, o lote para e informa quantos arquivos foram salvos; os restantes continuam pendentes.</p>
+<p>A furação Excellon pode ser salva em <b>.drl</b> ou convertida por <b>Salvar como</b> para <b>.gbr</b>.
+Sem alterações, Preservation conserva o Excellon original. Após edições, a furação é reemitida em milímetros com coordenadas decimais e validada por reabertura.
+O formato Excellon aceita ferramentas circulares, furos e trajetórias de rasgos; para formas preenchidas ou polaridade Clear, use Gerber.</p>
+<p><b>Fechar todos os arquivos</b> também tem um ícone na barra superior e pede para salvar alterações antes de fechar.
+Use <b>Ajuda → <a href="{{report_url}}">Relatar problemas</a></b> para abrir o formulário no navegador.</p>
+<p class="tip"><b>Dados da sessão:</b> grupos de seleção e a edição do conteúdo de textos vetoriais ficam disponíveis enquanto a sessão estiver aberta.
+Ao salvar, a geometria continua no Gerber; fechar e reabrir esse arquivo não recupera os grupos nem o conteúdo editável do texto.</p>
+
+<h2><a name="layers"></a>2. Camadas e funções</h2>
+<p>Clique no nome de uma camada no gestor para ativá-la. Ela aparece à frente das demais
+enquanto estiver ativa. As setas <b>Subir/Descer</b> organizam a pilha das camadas inativas.</p>
+<p>A caixa de seleção mostra ou oculta a camada. Dois cliques no nome abrem opções de
+<b>Cor, Opacidade e Função</b>. O botão × fecha a camada.</p>
+<table width="100%" cellspacing="0" cellpadding="6" border="1">
+<tr><th>Função</th><th>Representa</th></tr>
+<tr><td>F.Cu / B.Cu / InN.Cu</td><td>Cobre superior, inferior ou interno.</td></tr>
+<tr><td>F.Silk / B.Silk</td><td>Serigrafia superior ou inferior.</td></tr>
+<tr><td>F.Mask / B.Mask</td><td>Aberturas da máscara de solda.</td></tr>
+<tr><td>F.Paste / B.Paste</td><td>Pasta de solda.</td></tr>
+<tr><td>Edge.Cuts / Route.Cuts</td><td>Contorno da placa e recortes/rasgos.</td></tr>
+<tr><td>Drill / Drill.PTH / Drill.NPTH</td><td>Furação e rasgos passantes em Gerber.</td></tr>
+</table>
+<p>O editor prioriza a função informada dentro do Gerber X2. Na ausência dela,
+usa o nome/extensão; por exemplo, <i>olc</i> é cobre superior, <i>srlc</i> é serigrafia superior
+e <i>fur</i> é furação. Se necessário, ajuste <b>Função</b> manualmente.</p>
+
+<h2><a name="selection"></a>3. Navegação e seleção</h2>
+<ul>
+<li><b>Scroll:</b> aproxima ou afasta no ponto do cursor.</li>
+<li><b>Botão central pressionado:</b> desloca a vista.</li>
+<li><b>{{view.fit}}:</b> enquadra todas as camadas visíveis.</li>
+<li><b>Clique:</b> seleciona um objeto ou grupo. <b>Ctrl+clique</b> adiciona/remove da seleção.</li>
+<li><b>Janela da esquerda para a direita:</b> seleciona o que estiver totalmente dentro. Um grupo precisa caber inteiro.</li>
+<li><b>Janela da direita para a esquerda:</b> seleciona o que cruzar a janela; tocar uma parte seleciona o grupo inteiro.</li>
+</ul>
+<p><b>Selecionar apenas camada ativa</b> restringe a seleção à camada escolhida.
+O painel Propriedades mostra a seleção atual e permite editar os tipos compatíveis.</p>
+
+<h2><a name="groups"></a>4. Agrupar e desagrupar</h2>
+<p>Uma imagem importada entra <b>agrupada automaticamente</b>. Clique em qualquer parte
+para selecionar a imagem inteira e mover, copiar ou excluir o conjunto.</p>
+<ol>
+<li>Selecione dois ou mais objetos da <b>mesma camada</b>.</li>
+<li>Use <b>Editar → Agrupar objetos</b> ou <b>{{edit.group}}</b>.</li>
+<li>Para separar os componentes, selecione o grupo e use <b>Desagrupar objetos</b> ou <b>{{edit.ungroup}}</b>.</li>
+</ol>
+<p>Agrupar e desagrupar aceitam <b>{{edit.undo}} / {{edit.redo}}</b>.
+Uma cópia recebe seu próprio grupo, para que o original e a cópia sejam selecionados separadamente.
+Os textos vetoriais continuam com sua edição de texto durante a sessão.</p>
+<p class="tip">Os grupos organizam a seleção durante a sessão. Eles não alteram os objetos de fabricação nem acrescentam informações de agrupamento ao arquivo Gerber.</p>
+
+<h2><a name="editing"></a>5. Mover, copiar e editar</h2>
+<p>Os comandos do menu <b>Editar</b> também estão em ícones na barra superior, entre os botões de arquivos e de visualização.
+Passe o mouse sobre um ícone para ver o nome e o atalho. Um botão desabilitado fica cinza.</p>
+<p>Campos desabilitados ou de somente leitura também aparecem em cinza. Campos de consulta permitem selecionar e copiar o conteúdo quando aplicável;
+para alterar as propriedades de um objeto, use <b>Editar propriedades</b>.</p>
+<p>Selecione o objeto ou grupo e use <b>{{edit.move}}</b> para movê-lo seguindo o cursor.
+Clique para posicionar; <b>Esc</b> ou botão direito cancela a prévia. Clicar e arrastar uma seleção também move.</p>
+<p><b>{{edit.copy}}</b> copia; <b>{{edit.cut}}</b> recorta; <b>{{edit.paste}}</b> cola pelo cursor.
+<b>{{edit.duplicate}}</b> prepara uma duplicação. <b>{{edit.delete}}</b> exclui a seleção.
+<b>{{edit.undo}}</b> desfaz e <b>{{edit.redo}}</b> refaz.</p>
+<p>Ao colar, duplicar, espelhar uma cópia ou usar Mover, o <b>canto inferior esquerdo do conjunto</b> acompanha o cursor,
+considerando a espessura dos traços e o tamanho dos pads. No espelhamento, esse canto é recalculado após a reflexão.
+O clique fixa a posição mostrada na prévia, respeitando o snap. Ao clicar e arrastar diretamente, o ponto onde você pegou o objeto permanece como referência.</p>
+<p><b>Editar → Mover por deslocamento</b> aceita valores exatos de X/Y.
+<b>Cópia espelhada</b> reflete em X, Y ou ambos. <b>Matriz de cópias</b> distribui cópias
+em linhas/colunas ou em torno de um centro.</p>
+<p>Dois cliques em um objeto abrem as propriedades compatíveis. Textos inseridos nesta sessão
+podem ser alterados pelo diálogo de texto. Para editar componentes de uma imagem separadamente, desagrupe-a primeiro.</p>
+
+<h2><a name="images"></a>6. Importar imagens</h2>
+<p>Use <b>Ferramentas → Importar gráfico P&amp;B</b> ou <b>{{tool.import_graphic}}</b>.
+São aceitos PNG, JPG, BMP, TIFF e WebP.</p>
+<ol>
+<li>Ajuste a <b>largura física</b>, a <b>resolução</b> em pixels e o <b>limiar</b> preto/branco.</li>
+<li>Confira o preview. Preto cria geometria; branco/transparência deixa a área livre. Use <b>Inverter</b> quando necessário.</li>
+<li>Mantenha <b>Posicionar pelo mouse</b> marcado e confirme.</li>
+<li>A prévia seguirá o mouse. Clique para fixar o <b>centro da imagem</b>.</li>
+</ol>
+<p>Para inserir por coordenadas, desmarque <b>Posicionar pelo mouse</b> e informe X/Y do canto inferior esquerdo.
+A imagem só entra no histórico após confirmar o posicionamento. Ela mantém largura, proporção e polaridade,
+fica agrupada e pode ser desfeita em uma única operação.</p>
+
+<h2><a name="drawing"></a>7. Desenho, texto e cotas</h2>
+<p>Ative uma camada visível e escolha uma ferramenta à esquerda ou no menu Ferramentas.</p>
+<p>Marque <b>Preenchido</b> na barra de parâmetros para desenhar círculos, quadrados e retângulos sólidos.
+No arco, o preenchimento cria um <b>setor circular</b>, fechado pelos dois raios. Para alterar depois, selecione a forma e abra <b>Editar propriedades</b> (E).</p>
+<p>Para editar vários objetos compatíveis, selecione-os e abra as propriedades. Cada campo tem uma caixa de aplicação;
+marque apenas os campos desejados. Alterar um valor marca sua caixa automaticamente. <b>Vários valores</b> indica diferenças entre os objetos.
+Por exemplo, mudar apenas Raio ou Espessura mantém os centros, posições e demais parâmetros individuais.</p>
+<p><b>Editar → Matriz de cópias</b> também tem um botão na barra superior. Na matriz retangular, informe colunas, linhas e passos X/Y.
+Na polar, informe quantidade e ângulo total. Marque <b>Definir matriz polar pelo raio</b> para informar raio e direção do centro em relação ao original;
+o original permanece no lugar. Com 180°, o centro fica à esquerda. As quantidades incluem o original; 4 posições geram 3 cópias.
+Também é possível escolher o centro pelo mouse ou por coordenadas e decidir se os objetos giram junto com a matriz.</p>
+<ul>
+<li><b>Linha:</b> clique no início e no fim.</li>
+<li><b>Arco:</b> clique no centro, no início e na direção do fim. O menu oferece sentido horário.</li>
+<li><b>Círculo:</b> clique no centro e em um ponto da borda.</li>
+<li><b>Retângulo/quadrado:</b> clique em dois cantos opostos.</li>
+<li><b>Texto:</b> clique no ponto de inserção e ajuste conteúdo, fonte, altura e orientação.</li>
+<li><b>Cota:</b> indique os dois pontos medidos e a posição da cota.</li>
+<li><b>Medir distância:</b> clique em dois pontos; a régua mostra distâncias sem criar geometria.</li>
+</ul>
+<p><b>Dark</b> adiciona e <b>Clear</b> subtrai áreas, conforme a ordem dos objetos.
+<b>Shift</b> restringe direções em 45° ou 90°, conforme Ortho. O snap à grade e o snap a pontos são independentes.</p>
+
+<h2><a name="fabrication"></a>8. Fiduciais e recortes</h2>
+<p><b>Inserir fiducial</b> permite escolher posição, diâmetro de cobre, abertura da máscara e face.
+As camadas correspondentes são criadas quando necessário.</p>
+<p>Selecione formas e use <b>Recortes e rasgos da seleção</b> para converter a largura do traço
+ou um contorno fechado em cortes. A função <b>Route.Cuts</b> identifica os objetos de recorte usados no 3D.
+<b>Nova camada de recortes</b> também permite desenhá-los diretamente.</p>
+
+<h2><a name="viewer3d"></a>9. Visualizador 3D e exportação</h2>
+<p>Abra por <b>Visualizar → Visualizador 3D</b> ou <b>{{view.3d}}</b>.
+Após editar no 2D, retorne à janela 3D para atualizar a placa. <b>Atualizar PCB</b> solicita uma nova conferência dos dados.</p>
+<p>A barra inferior mostra o percentual das etapas de preparação, furação, composição e geração das malhas, tanto na abertura quanto na atualização.
+O percentual indica etapas concluídas, sem previsão de tempo restante.</p>
+<ul>
+<li><b>Arrastar:</b> orbita. Botão central/direito desloca. Scroll aproxima/afasta.</li>
+<li>Use as vistas Superior, Inferior, Isométrica, Frente e Direita. <b>Home</b> enquadra e <b>F</b> inverte a placa.</li>
+<li><b>Espessura PCB</b> define a espessura. <b>Detalhe 3D</b> alterna Fino, Normal e Rápido.</li>
+<li><b>Realista</b> altera a iluminação; <b>Perspectiva</b> alterna o tipo de projeção.</li>
+<li>A lista de materiais permite ocultar substrato e superfícies para inspecionar outras camadas.</li>
+</ul>
+<p><b>Edge.Cuts</b> fornece o contorno real. Sem ele, o visualizador informa que estima um retângulo pelos limites.
+<b>Drill / Drill.PTH / Drill.NPTH</b> em Gerber ou Excellon recortam furos e rasgos passantes, inclusive com a camada oculta no 2D.
+Drillmap é um desenho auxiliar. Furos cegos/enterrados ainda exigem um stackup não disponível nesta versão.</p>
+<p>O menu Arquivo do 3D exporta <b>JPG</b>, <b>WRL</b> e <b>STEP com cores</b>.
+Escolha a resolução no JPG. Os modelos seguem os materiais visíveis; se o suporte STEP não estiver disponível na instalação, essa opção fica desabilitada.</p>
+
+<h2><a name="preferences"></a>10. Preferências</h2>
+<p>Configure unidades, grade, cor do canvas, disposição das ferramentas, idioma e atalhos.
+As unidades alteram a apresentação dos valores. As preferências são conservadas ao reiniciar.</p>
+<p>Use <b>Preferências → Teclas de atalho</b> para personalizar as teclas. A tabela abaixo mostra
+os atalhos atuais; reabra esta ajuda após uma alteração para conferir a lista.</p>
+
+<h2><a name="shortcuts"></a>11. Atalhos atuais</h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="6">
+<tr><th align="left">Função</th><th align="left">Atalho</th></tr>
+{{shortcuts}}
+</table>
+<p><a href="#start">Voltar ao índice</a></p>
+</body></html>
