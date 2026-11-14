@@ -186,12 +186,14 @@ def main():
         )
     digest = hashlib.sha256(archive.read_bytes()).hexdigest()
     (output / (archive.name + ".sha256")).write_text(
-        f"{digest}  {archive.name}\n", encoding="ascii"
+        f"{digest}  {archive.name}\n", encoding="ascii", newline="\n"
     )
     source = output / f"EditorGerber-v{VERSION}-source.zip"
     source_archive(source)
     (output / (source.name + ".sha256")).write_text(
-        f"{hashlib.sha256(source.read_bytes()).hexdigest()}  {source.name}\n", encoding="ascii"
+        f"{hashlib.sha256(source.read_bytes()).hexdigest()}  {source.name}\n",
+        encoding="ascii",
+        newline="\n",
     )
     print(
         json.dumps(

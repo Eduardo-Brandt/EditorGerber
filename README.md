@@ -1,6 +1,6 @@
 # Editor Gerber — 0.13.2
 
-Editor desktop para Windows 10/11, em Python/PySide6. Abre Gerbers com ou sem
+Editor desktop para Windows, Linux e macOS, em Python/PySide6. Abre Gerbers com ou sem
 extensão, sobrepõe camadas e permite selecionar, excluir, mover, copiar e criar
 geometria. O layout segue a organização do GerbView do KiCad.
 
@@ -10,14 +10,24 @@ geometria. O layout segue a organização do GerbView do KiCad.
 
 ## Versões portáteis
 
-A versão 0.13 prepara pacotes sem instalação de Python para Windows x64,
-Linux x64 e macOS Intel/Apple Silicon. A compilação inclui Qt e o backend
+Há pacotes sem instalação de Python para Windows x64, Linux x64 e macOS
+Intel/Apple Silicon. A compilação inclui Qt e o backend
 de exportação STEP, testa o executável e gera arquivo compactado e SHA-256.
 O workflow do GitHub Actions compila cada sistema no seu ambiente nativo e
 publica as tags de versão em GitHub Releases.
 
 [Repositório no GitHub](https://github.com/Eduardo-Brandt/EditorGerber) ·
 [Downloads da versão mais recente](https://github.com/Eduardo-Brandt/EditorGerber/releases/latest)
+
+| Sistema | Pacote 0.13.2 |
+| --- | --- |
+| Windows 10/11 x64 | [ZIP portátil](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.13.2/EditorGerber-v0.13.2-windows-x64.zip) |
+| Linux x64, glibc 2.35+ | [TAR.GZ portátil](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.13.2/EditorGerber-v0.13.2-linux-x64.tar.gz) |
+| macOS 14+ Intel | [ZIP portátil](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.13.2/EditorGerber-v0.13.2-macos-x64.zip) |
+| macOS 14+ Apple Silicon | [ZIP portátil](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.13.2/EditorGerber-v0.13.2-macos-arm64.zip) |
+
+Extraia a pasta inteira. No Windows, abra `EditorGerber.exe`; no Linux,
+execute `./EditorGerber`; no macOS, abra `EditorGerber.app`.
 
 Veja [como abrir, compilar e publicar](DISTRIBUICAO.md). A pasta `dist/`
 contém os pacotes gerados localmente. Código-fonte, licenças e relatório de

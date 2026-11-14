@@ -59,6 +59,12 @@ git push origin v0.13.2
 Também é possível iniciar pelo botão **Run workflow** em Actions. Nesse modo,
 os pacotes ficam como artefatos do workflow, sem publicar uma release.
 
+Se os quatro builds passaram e somente a publicação falhou, use o workflow
+**Publish verified portable packages**, informando a tag e o ID da execução
+de compilação. Ele confere a origem, os quatro resultados e os SHA-256 antes
+de publicar os mesmos arquivos, sem recompilar. Releases públicas existentes
+são preservadas.
+
 Os arquivos maiores ficam anexados à Release; não são enviados como arquivos
 normais do repositório. `dist/`, `build/`, `.venv/`, resultados de ensaio e
 backups estão excluídos do Git. As notas pessoais `Descricao projeto` também

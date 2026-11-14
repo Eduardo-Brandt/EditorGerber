@@ -1,0 +1,95 @@
+name: Publish verified portable packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag
+        required: true
+        type: string
+      build_run_id:
+        description: Portable workflow run with four successful builds
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ inputs.tag }}
+      BUILD_RUN_ID: ${{ inputs.build_run_id }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag }}
+      - name: Verify existing build provenance
+        shell: python
+        run: |
+          import json, os, re, subprocess, sys, urllib.request
+          sys.path.insert(0, os.environ['GITHUB_WORKSPACE'])
+          from gerber_editor.app.metadata import VERSION
+          tag = os.environ['RELEASE_TAG']
+          assert re.fullmatch(r'v\d+\.\d+\.\d+', tag)
+          assert tag == 'v' + VERSION
+          run_id = int(os.environ['BUILD_RUN_ID'])
+          base = 'https://api.github.com/repos/' + os.environ['GITHUB_REPOSITORY']
+          def get(path):
+              request = urllib.request.Request(base + path, headers={
+                  'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+                  'Accept': 'application/vnd.github+json',
+                  'User-Agent': 'EditorGerber-release',
+              })
+              with urllib.request.urlopen(request, timeout=60) as response:
+                  return json.load(response)
+          run = get(f'/actions/runs/{run_id}')
+          assert run['head_sha'] == subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          assert run['path'] == '.github/workflows/portable.yml'
+          assert run['event'] == 'push' and run['status'] == 'completed'
+          jobs = get(f'/actions/runs/{run_id}/jobs?per_page=100')['jobs']
+          expected = {
+              'build (windows-2022, windows-x64)',
+              'build (ubuntu-22.04, linux-x64)',
+              'build (macos-15-intel, macos-x64)',
+              'build (macos-15, macos-arm64)',
+          }
+          builds = {job['name']: job['conclusion'] for job in jobs if job['name'] in expected}
+          assert set(builds) == expected and all(value == 'success' for value in builds.values())
+          artifacts = get(f'/actions/runs/{run_id}/artifacts?per_page=100')['artifacts']
+          expected_artifacts = {'portable-' + name for name in ('windows-x64', 'linux-x64', 'macos-x64', 'macos-arm64', 'source')}
+          assert {a['name'] for a in artifacts} == expected_artifacts
+          assert not any(a['expired'] for a in artifacts)
+          print('Verified four successful native builds for ' + tag)
+      - uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.build_run_id }}
+          pattern: portable-*
+          path: release-assets
+          merge-multiple: true
+      - name: Check package set
+        shell: python
+        run: |
+          import os
+          from pathlib import Path
+          prefix = 'EditorGerber-' + os.environ['RELEASE_TAG'] + '-'
+          packages = {prefix + suffix for suffix in ('windows-x64.zip', 'linux-x64.tar.gz', 'macos-x64.zip', 'macos-arm64.zip', 'source.zip')}
+          assert {p.name for p in Path('release-assets').iterdir()} == packages | {name + '.sha256' for name in packages}
+      - name: Publish download files
+        run: |
+          cd release-assets
+          sed -i 's/\r$//' *.sha256
+          sha256sum -c *.sha256
+          cd ..
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = true || { echo "Release ja publicada; preservando arquivos existentes."; exit 1; }
+          else
+            gh release create "$RELEASE_TAG" --draft --verify-tag --title "Editor Gerber $RELEASE_TAG" --notes-file RELEASE_NOTES.md
+          fi
+          gh release upload "$RELEASE_TAG" release-assets/* --clobber
+          gh release edit "$RELEASE_TAG" --draft=false

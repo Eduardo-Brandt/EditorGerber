@@ -93,6 +93,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cd release-assets
+          sed -i 's/\r$//' *.sha256
           sha256sum -c *.sha256
           cd ..
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
