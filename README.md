@@ -1,4 +1,4 @@
-# Editor Gerber — 0.13.1
+# Editor Gerber — 0.13.2
 
 Editor desktop para Windows 10/11, em Python/PySide6. Abre Gerbers com ou sem
 extensão, sobrepõe camadas e permite selecionar, excluir, mover, copiar e criar

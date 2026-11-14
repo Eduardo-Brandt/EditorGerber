@@ -1,4 +1,4 @@
-Editor Gerber 0.13.1: primeira distribuição portátil com Python e dependências
+Editor Gerber 0.13.2: primeira distribuição portátil com Python e dependências
 incluídos, mantendo os recursos da versão 0.12.2.
 
 - Editor 2D de Gerber e Excellon, agrupamento e edição múltipla.
