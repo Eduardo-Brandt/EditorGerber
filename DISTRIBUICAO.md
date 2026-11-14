@@ -48,12 +48,12 @@ xvfb-run -a python -m scripts.build_portable
 
 O workflow compila Windows, Linux, macOS Intel e macOS Apple Silicon nos
 respectivos runners. Ao enviar uma tag igual à versão, por exemplo
-`v0.13.0`, ele verifica os quatro pacotes e publica os arquivos em Releases.
+`v0.13.1`, ele verifica os quatro pacotes e publica os arquivos em Releases.
 Se algum build falhar, a publicação aguarda a correção.
 
 ```text
-git tag v0.13.0
-git push origin v0.13.0
+git tag v0.13.1
+git push origin v0.13.1
 ```
 
 Também é possível iniciar pelo botão **Run workflow** em Actions. Nesse modo,
@@ -67,3 +67,6 @@ permanecem locais.
 O site pode apontar para a página `releases/latest` do repositório público,
 onde cada visitante escolhe seu sistema. Links de uma versão específica usam
 `releases/download/vVERSAO/NOME-DO-ARQUIVO`.
+
+Página de downloads deste projeto:
+https://github.com/Eduardo-Brandt/EditorGerber/releases/latest

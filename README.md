@@ -1,4 +1,4 @@
-# Editor Gerber — 0.13.0
+# Editor Gerber — 0.13.1
 
 Editor desktop para Windows 10/11, em Python/PySide6. Abre Gerbers com ou sem
 extensão, sobrepõe camadas e permite selecionar, excluir, mover, copiar e criar
@@ -15,6 +15,9 @@ Linux x64 e macOS Intel/Apple Silicon. A compilação inclui Qt e o backend
 de exportação STEP, testa o executável e gera arquivo compactado e SHA-256.
 O workflow do GitHub Actions compila cada sistema no seu ambiente nativo e
 publica as tags de versão em GitHub Releases.
+
+[Repositório no GitHub](https://github.com/Eduardo-Brandt/EditorGerber) ·
+[Downloads da versão mais recente](https://github.com/Eduardo-Brandt/EditorGerber/releases/latest)
 
 Veja [como abrir, compilar e publicar](DISTRIBUICAO.md). A pasta `dist/`
 contém os pacotes gerados localmente. Código-fonte, licenças e relatório de
