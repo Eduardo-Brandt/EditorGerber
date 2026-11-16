@@ -57,6 +57,7 @@ class MainWindow(
 ):
     def __init__(self, settings_path: Path | None = None, language=None):
         super().__init__()
+        self.setAcceptDrops(True)
         from gerber_editor.ui.branding import application_icon
 
         self.setWindowIcon(application_icon())
@@ -98,6 +99,8 @@ class MainWindow(
         )
         self.busy = BusyIndicator(self.locale, self)
         self.canvas = Canvas()
+        # Let the editor open files dropped over the drawing, instead of the scene.
+        self.canvas.setAcceptDrops(False)
         self.canvas.processing_pulse = self.busy.pulse
         self.canvas.renderer.processing_pulse = self.busy.pulse
         self.canvas.units = self.display_unit

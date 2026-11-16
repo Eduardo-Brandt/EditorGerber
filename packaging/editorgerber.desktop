@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Editor Gerber
+GenericName=PCB editor
+GenericName[pt_BR]=Editor de PCB
+Comment=Gerber and Excellon editor with a 3D PCB viewer
+Comment[pt_BR]=Editor Gerber e Excellon com visualizador de PCB 3D
+Exec=editorgerber %F
+Icon=editorgerber
+Terminal=false
+Categories=Development;Electronics;
+StartupNotify=true

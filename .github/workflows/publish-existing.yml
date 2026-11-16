@@ -50,7 +50,7 @@ jobs:
           run = get(f'/actions/runs/{run_id}')
           assert run['head_sha'] == subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
           assert run['path'] == '.github/workflows/portable.yml'
-          assert run['event'] == 'push' and run['status'] == 'completed'
+          assert run['event'] in ('push', 'workflow_dispatch') and run['status'] == 'completed'
           jobs = get(f'/actions/runs/{run_id}/jobs?per_page=100')['jobs']
           expected = {
               'build (windows-2022, windows-x64)',
@@ -79,7 +79,12 @@ jobs:
           from pathlib import Path
           prefix = 'EditorGerber-' + os.environ['RELEASE_TAG'] + '-'
           packages = {prefix + suffix for suffix in ('windows-x64.zip', 'linux-x64.tar.gz', 'macos-x64.zip', 'macos-arm64.zip', 'source.zip')}
-          assert {p.name for p in Path('release-assets').iterdir()} == packages | {name + '.sha256' for name in packages}
+          installers = {prefix + 'setup-' + suffix for suffix in ('windows-x64.exe', 'linux-x64.deb', 'macos-x64.pkg', 'macos-arm64.pkg')}
+          # Older tags only contain portable archives.
+          present = {p.name for p in Path('release-assets').iterdir()}
+          if any(name in present for name in installers):
+              packages |= installers
+          assert present == packages | {name + '.sha256' for name in packages}
       - name: Publish download files
         run: |
           cd release-assets

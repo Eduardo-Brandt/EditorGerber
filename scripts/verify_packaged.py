@@ -4,6 +4,7 @@ import json
 import sys
 import traceback
 from pathlib import Path
+from time import monotonic, sleep
 
 
 def main(args=None):
@@ -15,7 +16,8 @@ def main(args=None):
     report = {"frozen": bool(getattr(sys, "frozen", False)), "success": False}
     window = None
     try:
-        from PySide6.QtGui import QImage
+        from PySide6.QtCore import QMimeData, QPointF, Qt, QUrl
+        from PySide6.QtGui import QDragEnterEvent, QDropEvent, QImage
         from PySide6.QtWidgets import QApplication
 
         from gerber_editor.app.main_window import MainWindow
@@ -51,6 +53,30 @@ def main(args=None):
         data = window.writer.serialize(window.active_layer, SaveMode.NORMALIZED)
         reopened = GerberParser().parse(data)
         assert len(reopened.objects) == len(window.active_layer.objects)
+        dropped = out / "Placa revisão ç sem extensão"
+        dropped.write_bytes(data)
+        mime = QMimeData()
+        mime.setUrls([QUrl.fromLocalFile(str(dropped))])
+        actions = Qt.DropAction.CopyAction | Qt.DropAction.MoveAction
+        enter = QDragEnterEvent(
+            QPointF(20, 20), actions, mime,
+            Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier,
+        )
+        app.sendEvent(window.canvas.viewport(), enter)
+        assert enter.isAccepted()
+        drop = QDropEvent(
+            QPointF(20, 20), actions, mime,
+            Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier,
+        )
+        app.sendEvent(window.canvas.viewport(), drop)
+        assert drop.isAccepted() and drop.dropAction() == Qt.DropAction.CopyAction
+        deadline = monotonic() + 30
+        while window._import_jobs and monotonic() < deadline:
+            app.processEvents()
+            sleep(0.01)
+        app.processEvents()
+        assert not window._import_jobs and any(layer.path == dropped for layer in window.layers)
+        assert dropped.read_bytes() == data
         assert "Editor Gerber" in help_html(window)
         window.set_language("en")
         assert "Getting started" in help_html(window)
@@ -82,6 +108,7 @@ def main(args=None):
             version=VERSION,
             success=True,
             gerber_roundtrip=True,
+            file_drop=True,
             assets=True,
             help_languages=["pt_BR", "en"],
             qr=True,

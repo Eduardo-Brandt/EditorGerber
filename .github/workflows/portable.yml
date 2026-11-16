@@ -1,9 +1,14 @@
-name: Portable Windows Linux macOS
+name: Packages Windows Linux macOS
 
 on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: Publish this version after all package checks pass
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -35,7 +40,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxkbcommon-x11-0 libegl1 libgl1 libopengl0 libxrender1 libxcursor1 libxrandr2 libxi6 libxinerama1 fonts-dejavu-core
+          sudo apt-get install -y xvfb desktop-file-utils libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxkbcommon-x11-0 libegl1 libgl1 libopengl0 libxrender1 libxcursor1 libxrandr2 libxi6 libxinerama1 fonts-dejavu-core
       - name: Install release dependencies
         run: python -m pip install -r requirements-build.txt
       - name: Validate tag
@@ -52,6 +57,12 @@ jobs:
       - name: Build and verify Windows or macOS
         if: runner.os != 'Linux'
         run: python -m scripts.build_portable
+      - name: Build and test Linux installer
+        if: runner.os == 'Linux'
+        run: xvfb-run -a python -m scripts.build_installer --verify-installation
+      - name: Build and test Windows or macOS installer
+        if: runner.os != 'Linux'
+        run: python -m scripts.build_installer --verify-installation
       - uses: actions/upload-artifact@v7
         with:
           name: portable-${{ matrix.platform }}
@@ -59,6 +70,7 @@ jobs:
             dist/*-${{ matrix.platform }}.*
           if-no-files-found: error
           compression-level: 0
+          retention-days: 7
       - name: Corresponding source
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v7
@@ -74,9 +86,11 @@ jobs:
           path: |
             build/**/verification/report.json
             build/**/work/**/warn-*.txt
+            build/**/installer-verification/report.json
+            build/**/installer*.log
 
   release:
-    if: startsWith(github.ref, 'refs/tags/')
+    if: startsWith(github.ref, 'refs/tags/') || inputs.publish_release
     needs: build
     runs-on: ubuntu-22.04
     permissions:
@@ -92,14 +106,21 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          RELEASE_TAG="v$(python3 -c 'from gerber_editor.app.metadata import VERSION; print(VERSION)')"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           cd release-assets
           sed -i 's/\r$//' *.sha256
           sha256sum -c *.sha256
           cd ..
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            test "$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft)" = true || { echo "Release ja publicada; preservando arquivos existentes."; exit 1; }
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = true || { echo "Release ja publicada; preservando arquivos existentes."; exit 1; }
           else
-            gh release create "$GITHUB_REF_NAME" --draft --verify-tag --title "Editor Gerber $GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md
+            if TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/commits/$RELEASE_TAG" --jq .sha 2>/dev/null); then
+              test "$TAG_SHA" = "$GITHUB_SHA" || { echo "Tag aponta para outro commit; preservando tag existente."; exit 1; }
+            else
+              gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$RELEASE_TAG" -f sha="$GITHUB_SHA" >/dev/null
+            fi
+            gh release create "$RELEASE_TAG" --draft --verify-tag --title "Editor Gerber $RELEASE_TAG" --notes-file RELEASE_NOTES.md
           fi
-          gh release upload "$GITHUB_REF_NAME" release-assets/* --clobber
-          gh release edit "$GITHUB_REF_NAME" --draft=false
+          gh release upload "$RELEASE_TAG" release-assets/* --clobber
+          gh release edit "$RELEASE_TAG" --draft=false

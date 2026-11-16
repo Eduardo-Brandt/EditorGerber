@@ -1,4 +1,4 @@
-# Editor Gerber — 0.13.2
+# Editor Gerber — 0.14.0
 
 Editor desktop para Windows, Linux e macOS, em Python/PySide6. Abre Gerbers com ou sem
 extensão, sobrepõe camadas e permite selecionar, excluir, mover, copiar e criar
@@ -8,10 +8,10 @@ geometria. O layout segue a organização do GerbView do KiCad.
 [brandttecnologia.com.br/EditorGerber](https://brandttecnologia.com.br/EditorGerber).
 **SOFTWARE LIVRE — [GPLv3](LICENSE)**. Direitos autorais: [COPYRIGHT.md](COPYRIGHT.md).
 
-## Versões portáteis
+## Instaladores e versões portáteis
 
-Há pacotes sem instalação de Python para Windows x64, Linux x64 e macOS
-Intel/Apple Silicon. A compilação inclui Qt e o backend
+Há instaladores e pacotes portáteis sem instalação de Python para Windows x64,
+Linux x64 e macOS Intel/Apple Silicon. A compilação inclui Qt e o backend
 de exportação STEP, testa o executável e gera arquivo compactado e SHA-256.
 O workflow do GitHub Actions compila cada sistema no seu ambiente nativo e
 publica as tags de versão em GitHub Releases.
@@ -19,12 +19,12 @@ publica as tags de versão em GitHub Releases.
 [Repositório no GitHub](https://github.com/Eduardo-Brandt/EditorGerber) ·
 [Downloads da versão mais recente](https://github.com/Eduardo-Brandt/EditorGerber/releases/latest)
 
-| Sistema | Pacote 0.13.2 |
-| --- | --- |
-| Windows 10/11 x64 | [ZIP portátil](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.13.2/EditorGerber-v0.13.2-windows-x64.zip) |
-| Linux x64, glibc 2.35+ | [TAR.GZ portátil](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.13.2/EditorGerber-v0.13.2-linux-x64.tar.gz) |
-| macOS 14+ Intel | [ZIP portátil](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.13.2/EditorGerber-v0.13.2-macos-x64.zip) |
-| macOS 14+ Apple Silicon | [ZIP portátil](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.13.2/EditorGerber-v0.13.2-macos-arm64.zip) |
+| Sistema | Instalador 0.14.0 | Portátil 0.14.0 |
+| --- | --- | --- |
+| Windows 10/11 x64 | [Setup EXE](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.14.0/EditorGerber-v0.14.0-setup-windows-x64.exe) | [ZIP](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.14.0/EditorGerber-v0.14.0-windows-x64.zip) |
+| Ubuntu 22.04+ / Debian 12+ x64 | [DEB](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.14.0/EditorGerber-v0.14.0-setup-linux-x64.deb) | [TAR.GZ](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.14.0/EditorGerber-v0.14.0-linux-x64.tar.gz) |
+| macOS 14+ Intel | [PKG](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.14.0/EditorGerber-v0.14.0-setup-macos-x64.pkg) | [ZIP](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.14.0/EditorGerber-v0.14.0-macos-x64.zip) |
+| macOS 14+ Apple Silicon | [PKG](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.14.0/EditorGerber-v0.14.0-setup-macos-arm64.pkg) | [ZIP](https://github.com/Eduardo-Brandt/EditorGerber/releases/download/v0.14.0/EditorGerber-v0.14.0-macos-arm64.zip) |
 
 Extraia a pasta inteira. No Windows, abra `EditorGerber.exe`; no Linux,
 execute `./EditorGerber`; no macOS, abra `EditorGerber.app`.
@@ -34,6 +34,11 @@ contém os pacotes gerados localmente. Código-fonte, licenças e relatório de
 verificação acompanham a distribuição.
 
 ## Executar pelo projeto
+
+Na versão 0.14.0, você pode arrastar um ou vários Gerbers ou arquivos Excellon
+do explorador para a janela do editor, inclusive sobre o desenho e o gestor
+de camadas. Arquivos sem extensão também são aceitos. Eles são adicionados às
+camadas abertas, com barra de progresso no rodapé. A ajuda local explica o uso.
 
 Clique duas vezes em **Iniciar.bat** nesta pasta. **Iniciar.ps1** também está
 disponível. O ambiente `.venv` já está preparado.

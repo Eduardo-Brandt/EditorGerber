@@ -1,5 +1,22 @@
-Editor Gerber 0.13.2: primeira distribuição portátil com Python e dependências
-incluídos, mantendo os recursos da versão 0.12.2.
+Editor Gerber 0.14.0: instaladores nativos e abertura por Drag & Drop.
+
+- Windows x64: instalador `setup-windows-x64.exe`, com menu Iniciar,
+  atalho opcional na área de trabalho e desinstalador. Instala para o usuário atual.
+- Ubuntu 22.04+ / Debian 12+ x64: pacote `setup-linux-x64.deb`, com comando
+  `editorgerber` e entrada no menu de aplicativos.
+- macOS 14+ Intel e Apple Silicon: pacotes `.pkg` separados, que instalam
+  `EditorGerber.app` em Aplicativos.
+- As versões portáteis continuam disponíveis. Todos os pacotes incluem Python,
+  Qt e exportação STEP; não é necessário instalar Python separadamente.
+
+Os instaladores são testados nos respectivos sistemas: instalação, execução
+do aplicativo compilado e, em Windows/Linux, desinstalação. A execução verifica
+Gerber, Drag & Drop, ajuda, QR Code, furação 3D e exportações WRL/STEP.
+
+Arraste um ou vários arquivos do explorador para a janela do editor,
+incluindo a área de desenho e o gestor de camadas. Os arquivos são adicionados
+às camadas abertas, com progresso no rodapé. Gerbers sem extensão também
+são aceitos. A ajuda local foi atualizada nos dois idiomas.
 
 - Editor 2D de Gerber e Excellon, agrupamento e edição múltipla.
 - Formas preenchidas, cópias retangulares/polares e posicionamento pelo canto no cursor.

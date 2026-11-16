@@ -20,6 +20,47 @@ log = logging.getLogger(__name__)
 
 
 class FileActions(BatchSaveActions):
+    def _file_drop_paths(self, event):
+        if (
+            self._save_all_running
+            or self._save_all_preparing
+            or not event.possibleActions() & Qt.DropAction.CopyAction
+        ):
+            return []
+        # Content recognition stays in the existing importer, including extensionless files.
+        return list(
+            dict.fromkeys(
+                Path(url.toLocalFile())
+                for url in event.mimeData().urls()
+                if url.isLocalFile() and url.toLocalFile()
+            )
+        )
+
+    def dragEnterEvent(self, event):
+        if self._file_drop_paths(event):
+            event.setDropAction(Qt.DropAction.CopyAction)
+            event.accept()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        self.dragEnterEvent(event)
+
+    def dropEvent(self, event):
+        paths = []
+        for path in self._file_drop_paths(event):
+            try:
+                if path.is_file():
+                    paths.append(path)
+            except OSError:
+                continue
+        if paths:
+            event.setDropAction(Qt.DropAction.CopyAction)
+            event.accept()
+            self.open_paths_async(paths)
+        else:
+            event.ignore()
+
     def remember_directory(self, path):
         self.last_directory = str(Path(path).resolve())
         self.remember(last_directory=self.last_directory)

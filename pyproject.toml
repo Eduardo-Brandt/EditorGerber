@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gerber-editor"
-version = "0.13.2"
+version = "0.14.0"
 license = "GPL-3.0-only"
 license-files = ["LICENSE"]
 authors = [{name = "Eduardo Guilherme Brandt"}]

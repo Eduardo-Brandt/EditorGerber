@@ -1,7 +1,7 @@
 """Product identity shared by the title, About dialog and startup screen."""
 
 APP_NAME = "Editor Gerber"
-VERSION = "0.13.2"
+VERSION = "0.14.0"
 CREATED = "2026-11-11"
 CREATOR = "Eduardo Guilherme Brandt"
 LOCATION = "Indaial-Brasil"
