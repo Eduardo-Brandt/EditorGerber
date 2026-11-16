@@ -34,3 +34,17 @@ testes de instalação. A tag aponta para o commit exato usado na compilação.
 Versões já publicadas e tags existentes são preservadas.
 
 Veja `DISTRIBUICAO.md` para instalação, remoção, requisitos e futuras compilações.
+
+## Resultado verificado
+
+Passaram **272 testes em 127,24 segundos**, além do Ruff e da verificação
+local do aplicativo. Os quatro builds nativos e a publicação passaram na
+execução [43969221028](https://github.com/Eduardo-Brandt/EditorGerber/actions/runs/43969221028).
+Os quatro instaladores executaram o aplicativo instalado com `frozen: true`,
+`success: true`, versão `0.14.0` e `file_drop: true`. Windows e Linux também
+passaram na desinstalação.
+
+A [Release 0.14.0](https://github.com/Eduardo-Brandt/EditorGerber/releases/tag/v0.14.0)
+foi publicada com quatro instaladores, quatro portáteis, código-fonte e os
+respectivos SHA-256. A tag `v0.14.0` aponta para o commit
+`512ba52ceb542e93ee67630a5d1c2a6d61f7897b`, usado nos quatro builds.
